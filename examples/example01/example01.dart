@@ -5,7 +5,7 @@
 #source('Bullet.dart');
 
 void main() {
-  var cm = new CanvasManager(query("#myCanvas"));
+  var cm = new Example01(query("#stage"));
   cm.initialize();
   cm.start();
 }
@@ -13,7 +13,7 @@ void main() {
 /**
  * Canvasへの描画クラス
  */
-class CanvasManager{
+class Example01{
   CanvasElement canvas;
   bool _running = false;
   List<Bullet> bullets;
@@ -21,7 +21,7 @@ class CanvasManager{
   /**
    * コンストラクタ
    */
-  CanvasManager(this.canvas);
+  Example01(this.canvas);
   
   /**
    * 初期化処理

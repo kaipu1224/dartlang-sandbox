@@ -321,13 +321,16 @@ $$.MetaInfo = {"":
  "super": "Object"
 };
 
-$$.CanvasManager = {"":
+$$.Example01 = {"":
  ["canvas", "_running", "bullets"],
  "super": "Object",
  initialize$0: function() {
   this.bullets = [];
-  for (var i = 0; i < 40; ++i)
-    $.add$1(this.bullets, $.CircleBullet$(0, 0, 0.5, 0.4, i * 0.1 + 0.1, 80, 3));
+  for (var pos = 0, i = 0; i < 100; ++i) {
+    if (i > 0 && $.mod(i, 20) === 0)
+      pos -= 130;
+    $.add$1(this.bullets, $.RotateBullet$(pos, pos, 0.5, 0.4, i * 0.1 + 0.1, 80, 3));
+  }
 },
  start$0: function() {
   this.requestRedraw$0();
@@ -337,13 +340,13 @@ $$.CanvasManager = {"":
 },
  update$1: function(timer) {
   var context = this.canvas.getContext$1('2d');
-  $.forEach(this.bullets, new $.CanvasManager_update_function());
+  $.forEach(this.bullets, new $.Example01_update_function());
   this.draw$1(context);
 },
  get$update: function() { return new $.BoundClosure(this, 'update$1'); },
  draw$1: function(context) {
   this.drawBackground$1(context);
-  $.forEach(this.bullets, new $.CanvasManager_draw_function(context));
+  $.forEach(this.bullets, new $.Example01_draw_function(context));
   this.requestRedraw$0();
 },
  drawBackground$1: function(context) {
@@ -354,7 +357,7 @@ $$.CanvasManager = {"":
 }
 };
 
-$$.Bullet = {"":
+$$.BulletBase = {"":
  [],
  "super": "Object",
  get$px: function() {
@@ -381,9 +384,9 @@ $$.Bullet = {"":
 }
 };
 
-$$.CircleBullet = {"":
+$$.RotateBullet = {"":
  ["_rotateSpeed", "_centerPosX", "_centerPosY", "_theta", "_size", "_radius", "_colors", "_color", "_px", "_py", "_vx", "_vy"],
- "super": "Bullet",
+ "super": "BulletBase",
  update$0: function() {
   this._theta = $.add(this._theta, this._rotateSpeed);
   var t1 = $.sin(this._theta);
@@ -410,7 +413,7 @@ $$.CircleBullet = {"":
   context.closePath$0();
   context.fill$0();
 },
- CircleBullet$7: function(px, py, vx, vy, _rotateSpeed, _radius, _size) {
+ RotateBullet$7: function(px, py, vx, vy, _rotateSpeed, _radius, _size) {
   this._centerPosX = px;
   this._centerPosY = py;
   var t1 = this._colors;
@@ -893,7 +896,7 @@ $$.Maps__emitMap_anon = {"":
 }
 };
 
-$$.CanvasManager_update_function = {"":
+$$.Example01_update_function = {"":
  [],
  "super": "Closure",
  call$1: function(bullet) {
@@ -901,7 +904,7 @@ $$.CanvasManager_update_function = {"":
 }
 };
 
-$$.CanvasManager_draw_function = {"":
+$$.Example01_draw_function = {"":
  ["context_0"],
  "super": "Closure",
  call$1: function(bullet) {
@@ -958,6 +961,10 @@ $.charCodeAt = function(receiver, index) {
     return receiver.charCodeAt(index);
   } else
     return receiver.charCodeAt$1(index);
+};
+
+$.cos = function(value) {
+  return Math.cos($.checkNum(value));
 };
 
 $.eqB = function(a, b) {
@@ -1279,8 +1286,19 @@ $.typeNameInFirefox = function(obj) {
   return name$;
 };
 
-$.CanvasManager$ = function(canvas) {
-  return new $.CanvasManager(canvas, false, null);
+$.mod = function(a, b) {
+  if ($.checkNumbers(a, b)) {
+    var result = a % b;
+    if (result === 0)
+      return 0;
+    if (result > 0)
+      return result;
+    if (b < 0)
+      return result - b;
+    else
+      return result + b;
+  }
+  return a.operator$mod$1(b);
 };
 
 $.forEach = function(receiver, f) {
@@ -1577,6 +1595,10 @@ $.gt = function(a, b) {
   return typeof a === 'number' && typeof b === 'number' ? a > b : $.gt$slow(a, b);
 };
 
+$.Example01$ = function(canvas) {
+  return new $.Example01(canvas, false, null);
+};
+
 $.getFunctionForTypeNameOf = function() {
   if (!(typeof(navigator) === 'object'))
     return $.typeNameInChrome;
@@ -1593,12 +1615,6 @@ $.getFunctionForTypeNameOf = function() {
     return $.typeNameInSafari;
   else
     return $.constructorNameFallback;
-};
-
-$.CircleBullet$ = function(px, py, vx, vy, _rotateSpeed, _radius, _size) {
-  var t1 = new $.CircleBullet(_rotateSpeed, null, null, 0.0, _size, _radius, ['red', 'yellow', 'blue', 'purple', 'white', 'orange', 'pink', 'gold'], null, px, py, vx, vy);
-  t1.CircleBullet$7(px, py, vx, vy, _rotateSpeed, _radius, _size);
-  return t1;
 };
 
 $.sin = function(value) {
@@ -1799,7 +1815,7 @@ $.Primitives_newList = function(length$) {
 };
 
 $.main = function() {
-  var cm = $.CanvasManager$($.query('#myCanvas'));
+  var cm = $.Example01$($.query('#stage'));
   cm.initialize$0();
   cm.start$0();
 };
@@ -1817,14 +1833,16 @@ $.contains$2 = function(receiver, other, startIndex) {
   return $.stringContainsUnchecked(receiver, other, startIndex);
 };
 
+$.RotateBullet$ = function(px, py, vx, vy, _rotateSpeed, _radius, _size) {
+  var t1 = new $.RotateBullet(_rotateSpeed, null, null, 0.0, _size, _radius, ['red', 'yellow', 'blue', 'purple', 'white', 'orange', 'pink', 'gold'], null, px, py, vx, vy);
+  t1.RotateBullet$7(px, py, vx, vy, _rotateSpeed, _radius, _size);
+  return t1;
+};
+
 $.getTypeNameOf = function(obj) {
   if ($._getTypeNameOf == null)
     $._getTypeNameOf = $.getFunctionForTypeNameOf();
   return $._getTypeNameOf.call$1(obj);
-};
-
-$.cos = function(value) {
-  return Math.cos($.checkNum(value));
 };
 
 $.NoSuchMethodException$ = function(_receiver, _functionName, _arguments, existingArgumentNames) {
