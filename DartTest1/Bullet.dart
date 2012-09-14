@@ -1,9 +1,9 @@
-interface BulletIF {
+interface Bullet {
   void update();
   void draw(CanvasRenderingContext2D context);
 }
 
-class Bullet implements BulletIF {
+class BulletBase implements Bullet {
   num _px, _py, _vx, _vy;
   num get px() => _px;
   num get py() => _py;
@@ -14,7 +14,7 @@ class Bullet implements BulletIF {
   void set vx(num px){ this._vx = vx; }
   void set vy(num py){ this._vy = vy; }
   
-  Bullet(this._px, this._py, this._vx, this._vy);
+  BulletBase(this._px, this._py, this._vx, this._vy);
   
   void update(){
   }
@@ -23,7 +23,7 @@ class Bullet implements BulletIF {
   }
 }
 
-class CircleBullet extends Bullet {
+class RotateBullet extends BulletBase {
   num _rotateSpeed;
   num _centerPosX, _centerPosY;
   num _theta = 0.0;
@@ -32,7 +32,7 @@ class CircleBullet extends Bullet {
   List<String> _colors = ["red","yellow","blue","purple","white","orange", "pink", "gold"];
   String _color;
   
-  CircleBullet(num px, num py, num vx, num vy, this._rotateSpeed, this._radius, this._size):super(px,py,vx,vy){
+  RotateBullet(num px, num py, num vx, num vy, this._rotateSpeed, this._radius, this._size):super(px,py,vx,vy){
     _centerPosX = px; 
     _centerPosY = py;
     _color = _colors[new Random().nextInt(_colors.length)];

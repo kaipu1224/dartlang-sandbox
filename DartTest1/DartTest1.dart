@@ -28,8 +28,12 @@ class CanvasManager{
    */ 
   void initialize(){
     bullets = [];
-    for(int i = 0; i < 40; i++){
-      bullets.add(new CircleBullet(0, 0, 0.5, 0.4,i * 0.1 + 0.1, 80, 3));
+    num pos = 0;
+    for(int i = 0; i < 100; i++){
+      if(i > 0 && i%20 == 0){
+        pos -= 130;
+      }
+      bullets.add(new RotateBullet(pos, pos, 0.5, 0.4,i * 0.1 + 0.1, 80, 3));
     }
   }
   
