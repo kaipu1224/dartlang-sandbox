@@ -338,12 +338,12 @@ $$.Example = {"":
  redraw$0: function() {
   $.window().requestAnimationFrame$1(this.get$draw());
 },
- fire$0: function() {
-  for (var t1 = this.rand, r = null, g = null, b = null, i = 0; i < 100; ++i) {
+ fire$2: function(x, y) {
+  for (var t1 = this.rand, r = null, g = null, b = null, i = 0; i < 200; ++i) {
     r = $.add(t1.nextInt$1(155), 99);
     g = $.add(t1.nextInt$1(155), 99);
     b = $.add(t1.nextInt$1(155), 99);
-    $.add$1(this.bullets, $.Bullet$(i * 5, 0, $.add(t1.nextDouble$0(), 1), $.sub(t1.nextDouble$0(), 2), 'rgb(' + $.S(r) + ',' + $.S(g) + ',' + $.S(b) + ')'));
+    $.add$1(this.bullets, $.Bullet$(x, y, $.sub(t1.nextDouble$0(), 3), $.sub(t1.nextDouble$0(), 2), $.sub(t1.nextDouble$0(), 2), 'rgb(' + $.S(r) + ',' + $.S(g) + ',' + $.S(b) + ')'));
   }
 },
  draw$1: function(time) {
@@ -355,14 +355,14 @@ $$.Example = {"":
   var i = $.sub($.get$length(this.bullets), 1);
   if (typeof i !== 'number')
     return this.draw$1$bailout(1, i);
-  for (; i > 0; --i)
+  for (; i >= 0; --i)
     if ($.index(this.bullets, i).get$alive() !== true)
       $.removeRange(this.bullets, i, 1);
   var t1 = 'Bullet count : ' + $.S($.get$length(this.bullets));
   $.query('#bulletCount').set$text(t1);
 },
  draw$1$bailout: function(state, i) {
-  for (; $.gtB(i, 0); i = $.sub(i, 1))
+  for (; $.geB(i, 0); i = $.sub(i, 1))
     if ($.index(this.bullets, i).get$alive() !== true)
       $.removeRange(this.bullets, i, 1);
   var t1 = 'Bullet count : ' + $.S($.get$length(this.bullets));
@@ -377,7 +377,7 @@ $$.Example = {"":
 };
 
 $$.Bullet = {"":
- ["_x", "_y", "_v", "_alive", "_theta", "_color"],
+ ["_x", "_y", "_v", "_alive", "_radX", "_radY", "_color", "_time"],
  "super": "Object",
  get$alive: function() {
   return this._alive;
@@ -385,15 +385,18 @@ $$.Bullet = {"":
  update$0: function() {
   var t1 = this._x;
   var t2 = this._v;
-  this._x = $.add(t1, $.mul(t2, $.cos(this._theta)));
-  this._y = $.add(this._y, t2);
+  this._x = $.add(t1, $.mul(t2, $.cos(this._radX)));
+  this._y = $.add(this._y, $.mul(t2, $.cos(this._radY)));
   if ($.gtB(this._y, 500) || $.ltB(this._x, 0) || $.gtB(this._x, 500))
+    this._alive = false;
+  this._time = this._time + 1;
+  if (this._alive === true && this._time > 200)
     this._alive = false;
 },
  draw$1: function(context) {
   context.set$fillStyle(this._color);
   context.beginPath$0();
-  context.arc$6(this._x, this._y, 1.5, 0, 6.283185307179586, true);
+  context.arc$6(this._x, this._y, 0.5, 0, 6.283185307179586, true);
   context.closePath$0();
   context.fill$0();
 }
@@ -702,7 +705,7 @@ $$._VariableSizeListIterator = {"":
 },
  next$0: function() {
   if (this.hasNext$0() !== true)
-    throw $.$$throw($.CTC10);
+    throw $.$$throw($.CTC3);
   var t1 = this._array;
   if (typeof t1 !== 'string' && (typeof t1 !== 'object' || t1 === null || t1.constructor !== Array && !t1.is$JavaScriptIndexingBehavior()))
     return this.next$0$bailout(1, t1, 0);
@@ -729,7 +732,7 @@ $$._VariableSizeListIterator = {"":
   switch (state) {
     case 0:
       if (this.hasNext$0() !== true)
-        throw $.$$throw($.CTC10);
+        throw $.$$throw($.CTC3);
       var t1 = this._array;
     case 1:
       state = 0;
@@ -746,7 +749,31 @@ $$.main_anon = {"":
  ["example_0"],
  "super": "Closure",
  call$1: function(event$) {
-  this.example_0.fire$0();
+  this.example_0.fire$2(250, 250);
+}
+};
+
+$$.main_anon0 = {"":
+ ["example_1"],
+ "super": "Closure",
+ call$1: function(event$) {
+  this.example_1.fire$2(event$.get$layerX(), event$.get$layerY());
+}
+};
+
+$$.Maps__emitMap_anon = {"":
+ ["result_3", "box_0", "visiting_2"],
+ "super": "Closure",
+ call$2: function(k, v) {
+  var t1 = this.box_0;
+  if (t1.first_1 !== true)
+    $.add$1(this.result_3, ', ');
+  t1.first_1 = false;
+  t1 = this.result_3;
+  var t2 = this.visiting_2;
+  $.Collections__emitObject(k, t1, t2);
+  $.add$1(t1, ': ');
+  $.Collections__emitObject(v, t1, t2);
 }
 };
 
@@ -816,33 +843,33 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"":
   if (typeof e === 'string')
     return e;
   if (typeof e === 'object' && e !== null && !!e.is$Date)
-    throw $.$$throw($.CTC);
+    throw $.$$throw($.CTC5);
   if (typeof e === 'object' && e !== null && !!e.is$RegExp)
-    throw $.$$throw($.CTC0);
+    throw $.$$throw($.CTC6);
   if (typeof e === 'object' && e !== null && e.is$_FileImpl())
     return e;
   if (typeof e === 'object' && e !== null && e.is$File())
-    throw $.$$throw($.CTC1);
+    throw $.$$throw($.CTC7);
   if (typeof e === 'object' && e !== null && e.is$_BlobImpl())
     return e;
   if (typeof e === 'object' && e !== null && e.is$Blob())
-    throw $.$$throw($.CTC2);
+    throw $.$$throw($.CTC8);
   if (typeof e === 'object' && e !== null && e.is$_FileListImpl())
     return e;
   if (typeof e === 'object' && e !== null && e.is$FileList())
-    throw $.$$throw($.CTC3);
+    throw $.$$throw($.CTC9);
   if (typeof e === 'object' && e !== null && e.is$_ImageDataImpl())
     return e;
   if (typeof e === 'object' && e !== null && e.is$ImageData())
-    throw $.$$throw($.CTC3);
+    throw $.$$throw($.CTC9);
   if (typeof e === 'object' && e !== null && e.is$_ArrayBufferImpl())
     return e;
   if (typeof e === 'object' && e !== null && e.is$ArrayBuffer())
-    throw $.$$throw($.CTC4);
+    throw $.$$throw($.CTC10);
   if (typeof e === 'object' && e !== null && e.is$_ArrayBufferViewImpl())
     return e;
   if (typeof e === 'object' && e !== null && e.is$ArrayBufferView())
-    throw $.$$throw($.CTC5);
+    throw $.$$throw($.CTC11);
   if (typeof e === 'object' && e !== null && e.is$Map()) {
     var slot = this.findSlot_7.call$1(e);
     t1.copy_1 = this.readSlot_6.call$1(slot);
@@ -921,7 +948,7 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"":
     }
     return copy;
   }
-  throw $.$$throw($.CTC6);
+  throw $.$$throw($.CTC12);
 },
  call$1$bailout: function(state, env0, env1, env2, env3, env4, env5, env6) {
   switch (state) {
@@ -956,33 +983,33 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"":
       if (typeof e === 'string')
         return e;
       if (typeof e === 'object' && e !== null && !!e.is$Date)
-        throw $.$$throw($.CTC);
+        throw $.$$throw($.CTC5);
       if (typeof e === 'object' && e !== null && !!e.is$RegExp)
-        throw $.$$throw($.CTC0);
+        throw $.$$throw($.CTC6);
       if (typeof e === 'object' && e !== null && e.is$_FileImpl())
         return e;
       if (typeof e === 'object' && e !== null && e.is$File())
-        throw $.$$throw($.CTC1);
+        throw $.$$throw($.CTC7);
       if (typeof e === 'object' && e !== null && e.is$_BlobImpl())
         return e;
       if (typeof e === 'object' && e !== null && e.is$Blob())
-        throw $.$$throw($.CTC2);
+        throw $.$$throw($.CTC8);
       if (typeof e === 'object' && e !== null && e.is$_FileListImpl())
         return e;
       if (typeof e === 'object' && e !== null && e.is$FileList())
-        throw $.$$throw($.CTC3);
+        throw $.$$throw($.CTC9);
       if (typeof e === 'object' && e !== null && e.is$_ImageDataImpl())
         return e;
       if (typeof e === 'object' && e !== null && e.is$ImageData())
-        throw $.$$throw($.CTC3);
+        throw $.$$throw($.CTC9);
       if (typeof e === 'object' && e !== null && e.is$_ArrayBufferImpl())
         return e;
       if (typeof e === 'object' && e !== null && e.is$ArrayBuffer())
-        throw $.$$throw($.CTC4);
+        throw $.$$throw($.CTC10);
       if (typeof e === 'object' && e !== null && e.is$_ArrayBufferViewImpl())
         return e;
       if (typeof e === 'object' && e !== null && e.is$ArrayBufferView())
-        throw $.$$throw($.CTC5);
+        throw $.$$throw($.CTC11);
       if (typeof e === 'object' && e !== null && e.is$Map()) {
         var slot = this.findSlot_7.call$1(e);
         t1.copy_1 = this.readSlot_6.call$1(slot);
@@ -1063,7 +1090,7 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"":
               $.indexSet(copy, i, this.call$1($.index(e, i)));
             return copy;
         }
-      throw $.$$throw($.CTC6);
+      throw $.$$throw($.CTC12);
   }
 }
 };
@@ -1073,22 +1100,6 @@ $$._convertDartToNative_PrepareForStructuredClone_walk_anon = {"":
  "super": "Closure",
  call$2: function(key, value) {
   this.box_0.copy_1[key] = this.walk_9.call$1(value);
-}
-};
-
-$$.Maps__emitMap_anon = {"":
- ["result_3", "box_0", "visiting_2"],
- "super": "Closure",
- call$2: function(k, v) {
-  var t1 = this.box_0;
-  if (t1.first_1 !== true)
-    $.add$1(this.result_3, ', ');
-  t1.first_1 = false;
-  t1 = this.result_3;
-  var t2 = this.visiting_2;
-  $.Collections__emitObject(k, t1, t2);
-  $.add$1(t1, ': ');
-  $.Collections__emitObject(v, t1, t2);
 }
 };
 
@@ -1165,20 +1176,20 @@ $.iae = function(argument) {
   throw $.$$throw($.IllegalArgumentException$(argument));
 };
 
-$._InputElementEventsImpl$ = function(_ptr) {
-  return new $._InputElementEventsImpl(_ptr);
-};
-
-$._DOMApplicationCacheEventsImpl$ = function(_ptr) {
-  return new $._DOMApplicationCacheEventsImpl(_ptr);
-};
-
 $.startsWith = function(receiver, other) {
   $.checkString(other);
   var length$ = other.length;
   if (length$ > receiver.length)
     return false;
   return other == receiver.substring(0, length$);
+};
+
+$._InputElementEventsImpl$ = function(_ptr) {
+  return new $._InputElementEventsImpl(_ptr);
+};
+
+$._DOMApplicationCacheEventsImpl$ = function(_ptr) {
+  return new $._DOMApplicationCacheEventsImpl(_ptr);
 };
 
 $.eqB = function(a, b) {
@@ -1238,6 +1249,10 @@ $.Example$ = function(_canvas) {
   return new $.Example(_canvas, null, $.Random_Random(null));
 };
 
+$._document = function() {
+return document;
+};
+
 $.checkNum = function(value) {
   if (!(typeof value === 'number')) {
     $.checkNull(value);
@@ -1263,20 +1278,16 @@ $._TextTrackListEventsImpl$ = function(_ptr) {
   return new $._TextTrackListEventsImpl(_ptr);
 };
 
-$._MediaStreamTrackEventsImpl$ = function(_ptr) {
-  return new $._MediaStreamTrackEventsImpl(_ptr);
-};
-
 $.ObjectNotClosureException$ = function() {
   return new $.ObjectNotClosureException();
 };
 
-$.isJsArray = function(value) {
-  return !(value == null) && value.constructor === Array;
+$._MediaStreamTrackEventsImpl$ = function(_ptr) {
+  return new $._MediaStreamTrackEventsImpl(_ptr);
 };
 
-$._document = function() {
-return document;
+$.isJsArray = function(value) {
+  return !(value == null) && value.constructor === Array;
 };
 
 $.clear = function(receiver) {
@@ -1350,6 +1361,12 @@ $.ListIterator$ = function(list, T) {
 
 $._JavaScriptAudioNodeEventsImpl$ = function(_ptr) {
   return new $._JavaScriptAudioNodeEventsImpl(_ptr);
+};
+
+$.isEmpty = function(receiver) {
+  if (typeof receiver === 'string' || $.isJsArray(receiver))
+    return receiver.length === 0;
+  return receiver.isEmpty$0();
 };
 
 $.StackOverflowException$ = function() {
@@ -1448,7 +1465,7 @@ $.unwrapException = function(ex) {
       if (typeof name$ === 'string' && $.startsWith(name$, 'call$') === true)
         return $.ObjectNotClosureException$();
       else
-        return $.NullPointerException$(null, $.CTC8);
+        return $.NullPointerException$(null, $.CTC2);
     else if ($.eqB(type, 'undefined_method'))
       if (typeof name$ === 'string' && $.startsWith(name$, 'call$') === true)
         return $.ObjectNotClosureException$();
@@ -1458,7 +1475,7 @@ $.unwrapException = function(ex) {
     var ieFacilityNumber = ex.number>>16 & 0x1FFF;
     if (typeof message === 'string')
       if ($.endsWith(message, 'is null') === true || $.endsWith(message, 'is undefined') === true || $.endsWith(message, 'is null or undefined') === true)
-        return $.NullPointerException$(null, $.CTC8);
+        return $.NullPointerException$(null, $.CTC2);
       else {
         if ($.contains$1(message, ' is not a function') !== true)
           var t1 = ieErrorCode === 438 && ieFacilityNumber === 10;
@@ -1507,12 +1524,6 @@ $.ge$slow = function(a, b) {
   if ($.checkNumbers(a, b))
     return a >= b;
   return a.operator$ge$1(b);
-};
-
-$.isEmpty = function(receiver) {
-  if (typeof receiver === 'string' || $.isJsArray(receiver))
-    return receiver.length === 0;
-  return receiver.isEmpty$0();
 };
 
 $._convertDartToNative_PrepareForStructuredClone = function(value) {
@@ -1607,21 +1618,6 @@ $._MediaStreamEventsImpl$ = function(_ptr) {
 $.setRuntimeTypeInfo = function(target, typeInfo) {
   if (!(target == null))
     target.builtin$typeInfo = typeInfo;
-};
-
-$.toString = function(value) {
-  if (typeof value == "object" && value !== null)
-    if ($.isJsArray(value))
-      return $.Collections_collectionToString(value);
-    else
-      return value.toString$0();
-  if (value === 0 && (1 / value) < 0)
-    return '-0.0';
-  if (value == null)
-    return 'null';
-  if (typeof value == "function")
-    return 'Closure';
-  return String(value);
 };
 
 $.mul$slow = function(a, b) {
@@ -1719,16 +1715,20 @@ $._EventsImpl$ = function(_ptr) {
   return new $._EventsImpl(_ptr);
 };
 
-$.substringUnchecked = function(receiver, startIndex, endIndex) {
-  return receiver.substring(startIndex, endIndex);
-};
-
 $._RTCPeerConnectionEventsImpl$ = function(_ptr) {
   return new $._RTCPeerConnectionEventsImpl(_ptr);
 };
 
+$.substringUnchecked = function(receiver, startIndex, endIndex) {
+  return receiver.substring(startIndex, endIndex);
+};
+
 $._BodyElementEventsImpl$ = function(_ptr) {
   return new $._BodyElementEventsImpl(_ptr);
+};
+
+$.Bullet$ = function(_x, _y, _v, _radX, _radY, _color) {
+  return new $.Bullet(_x, _y, _v, true, _radX, _radY, _color, 0);
 };
 
 $.add$1 = function(receiver, value) {
@@ -1753,10 +1753,6 @@ $.get$length = function(receiver) {
 
 $._AudioContextEventsImpl$ = function(_ptr) {
   return new $._AudioContextEventsImpl(_ptr);
-};
-
-$.Bullet$ = function(_x, _y, _v, _theta, _color) {
-  return new $.Bullet(_x, _y, _v, true, _theta, _color);
 };
 
 $.dynamicBind = function(obj, name$, methods, arguments$) {
@@ -1847,6 +1843,7 @@ $.main = function() {
   example.initialize$0();
   example.start$0();
   $.query('#fireBtn').get$on().get$click().add$2(new $.main_anon(example), false);
+  $.query('#stage').get$on().get$click().add$2(new $.main_anon0(example), false);
 };
 
 $.Random_Random = function(seed) {
@@ -1883,6 +1880,12 @@ $.IllegalArgumentException$ = function(arg) {
   return new $.IllegalArgumentException(arg);
 };
 
+$.iterator = function(receiver) {
+  if ($.isJsArray(receiver))
+    return $.ListIterator$(receiver);
+  return receiver.iterator$0();
+};
+
 $.UnsupportedOperationException$ = function(_message) {
   return new $.UnsupportedOperationException(_message);
 };
@@ -1914,7 +1917,7 @@ $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
 
 $.checkNull = function(object) {
   if (object == null)
-    throw $.$$throw($.NullPointerException$(null, $.CTC8));
+    throw $.$$throw($.NullPointerException$(null, $.CTC2));
   return object;
 };
 
@@ -1955,6 +1958,21 @@ $._PeerConnection00EventsImpl$ = function(_ptr) {
   return new $._PeerConnection00EventsImpl(_ptr);
 };
 
+$.toString = function(value) {
+  if (typeof value == "object" && value !== null)
+    if ($.isJsArray(value))
+      return $.Collections_collectionToString(value);
+    else
+      return value.toString$0();
+  if (value === 0 && (1 / value) < 0)
+    return '-0.0';
+  if (value == null)
+    return 'null';
+  if (typeof value == "function")
+    return 'Closure';
+  return String(value);
+};
+
 $._AbstractWorkerEventsImpl$ = function(_ptr) {
   return new $._AbstractWorkerEventsImpl(_ptr);
 };
@@ -1985,6 +2003,10 @@ $.index$slow = function(a, index) {
   return a.operator$index$1(index);
 };
 
+$.add = function(a, b) {
+  return typeof a === 'number' && typeof b === 'number' ? a + b : $.add$slow(a, b);
+};
+
 $._HttpRequestEventsImpl$ = function(_ptr) {
   return new $._HttpRequestEventsImpl(_ptr);
 };
@@ -2012,7 +2034,7 @@ $._MediaElementEventsImpl$ = function(_ptr) {
 
 $.$$throw = function(ex) {
   if (ex == null)
-    ex = $.CTC7;
+    ex = $.CTC0;
   var jsError = new Error();
   jsError.name = ex;
   jsError.description = ex;
@@ -2023,12 +2045,6 @@ $.$$throw = function(ex) {
 
 $._MessagePortEventsImpl$ = function(_ptr) {
   return new $._MessagePortEventsImpl(_ptr);
-};
-
-$.iterator = function(receiver) {
-  if ($.isJsArray(receiver))
-    return $.ListIterator$(receiver);
-  return receiver.iterator$0();
 };
 
 $.dynamicSetMetadata = function(inputTable) {
@@ -2105,11 +2121,6 @@ $._SharedWorkerContextEventsImpl$ = function(_ptr) {
   return new $._SharedWorkerContextEventsImpl(_ptr);
 };
 
-$.checkMutable = function(list, reason) {
-  if (!!(list.immutable$list))
-    throw $.$$throw($.UnsupportedOperationException$(reason));
-};
-
 $.indexOf$2 = function(receiver, element, start) {
   if ($.isJsArray(receiver))
     return $.Arrays_indexOf(receiver, element, start, receiver.length);
@@ -2120,6 +2131,11 @@ $.indexOf$2 = function(receiver, element, start) {
     return receiver.indexOf(element, start);
   }
   return receiver.indexOf$2(element, start);
+};
+
+$.checkMutable = function(list, reason) {
+  if (!!(list.immutable$list))
+    throw $.$$throw($.UnsupportedOperationException$(reason));
 };
 
 $.checkGrowable = function(list, reason) {
@@ -2173,10 +2189,6 @@ $.Primitives_newList = function(length$) {
   var result = new Array(length$);
   result.fixed$length = true;
   return result;
-};
-
-$.add = function(a, b) {
-  return typeof a === 'number' && typeof b === 'number' ? a + b : $.add$slow(a, b);
 };
 
 $.index = function(a, index) {
@@ -2306,13 +2318,13 @@ $.cos = function(value) {
   return Math.cos($.checkNum(value));
 };
 
-$._NotificationEventsImpl$ = function(_ptr) {
-  return new $._NotificationEventsImpl(_ptr);
-};
-
 $.regExpGetNative = function(regExp) {
   var r = regExp._re;
   return r == null ? regExp._re = $.regExpMakeNative(regExp, false) : r;
+};
+
+$._NotificationEventsImpl$ = function(_ptr) {
+  return new $._NotificationEventsImpl(_ptr);
 };
 
 $.NoMoreElementsException$ = function() {
@@ -2387,37 +2399,37 @@ Isolate.makeConstantList = function(list) {
   list.fixed$length = true;
   return list;
 };
-$.CTC8 = Isolate.makeConstantList([]);
-$.CTC10 = new Isolate.$isolateProperties.NoMoreElementsException();
-$.CTC16 = 'structured clone of Blob';
-$.CTC2 = new Isolate.$isolateProperties.NotImplementedException('structured clone of Blob');
-$.CTC17 = 'structured clone of other type';
-$.CTC6 = new Isolate.$isolateProperties.NotImplementedException('structured clone of other type');
-$.CTC18 = 'structured clone of File';
-$.CTC1 = new Isolate.$isolateProperties.NotImplementedException('structured clone of File');
-$.CTC19 = 'Cannot removeLast on immutable List.';
-$.CTC11 = new Isolate.$isolateProperties.UnsupportedOperationException('Cannot removeLast on immutable List.');
-$.CTC20 = 'Cannot add to immutable List.';
-$.CTC9 = new Isolate.$isolateProperties.UnsupportedOperationException('Cannot add to immutable List.');
-$.CTC21 = false;
-$.CTC22 = '^#[_a-zA-Z]\\w*$';
-$.CTC12 = new Isolate.$isolateProperties.JSSyntaxRegExp(false, false, '^#[_a-zA-Z]\\w*$');
+$.CTC2 = Isolate.makeConstantList([]);
+$.CTC3 = new Isolate.$isolateProperties.NoMoreElementsException();
+$.CTC16 = 'Cannot removeLast on immutable List.';
+$.CTC4 = new Isolate.$isolateProperties.UnsupportedOperationException('Cannot removeLast on immutable List.');
+$.CTC17 = 'structured clone of Blob';
+$.CTC8 = new Isolate.$isolateProperties.NotImplementedException('structured clone of Blob');
+$.CTC18 = false;
+$.CTC19 = '^#[_a-zA-Z]\\w*$';
+$.CTC = new Isolate.$isolateProperties.JSSyntaxRegExp(false, false, '^#[_a-zA-Z]\\w*$');
+$.CTC20 = 'structured clone of File';
+$.CTC7 = new Isolate.$isolateProperties.NotImplementedException('structured clone of File');
+$.CTC21 = 'structured clone of other type';
+$.CTC12 = new Isolate.$isolateProperties.NotImplementedException('structured clone of other type');
+$.CTC22 = 'Cannot add to immutable List.';
+$.CTC1 = new Isolate.$isolateProperties.UnsupportedOperationException('Cannot add to immutable List.');
+$.CTC14 = new Isolate.$isolateProperties._Random();
 $.CTC23 = 'Cannot removeRange on immutable List.';
 $.CTC13 = new Isolate.$isolateProperties.UnsupportedOperationException('Cannot removeRange on immutable List.');
 $.CTC24 = 'structured clone of Date';
-$.CTC = new Isolate.$isolateProperties.NotImplementedException('structured clone of Date');
-$.CTC14 = new Isolate.$isolateProperties._Random();
+$.CTC5 = new Isolate.$isolateProperties.NotImplementedException('structured clone of Date');
 $.CTC25 = 'structured clone of ArrayBufferView';
-$.CTC5 = new Isolate.$isolateProperties.NotImplementedException('structured clone of ArrayBufferView');
+$.CTC11 = new Isolate.$isolateProperties.NotImplementedException('structured clone of ArrayBufferView');
 $.CTC26 = 'structured clone of ArrayBuffer';
-$.CTC4 = new Isolate.$isolateProperties.NotImplementedException('structured clone of ArrayBuffer');
+$.CTC10 = new Isolate.$isolateProperties.NotImplementedException('structured clone of ArrayBuffer');
 $.CTC15 = new Isolate.$isolateProperties.Object();
 $.CTC27 = 'structured clone of FileList';
-$.CTC3 = new Isolate.$isolateProperties.NotImplementedException('structured clone of FileList');
+$.CTC9 = new Isolate.$isolateProperties.NotImplementedException('structured clone of FileList');
 $.CTC28 = null;
-$.CTC7 = new Isolate.$isolateProperties.NullPointerException(null, Isolate.$isolateProperties.CTC8);
+$.CTC0 = new Isolate.$isolateProperties.NullPointerException(null, Isolate.$isolateProperties.CTC2);
 $.CTC29 = 'structured clone of RegExp';
-$.CTC0 = new Isolate.$isolateProperties.NotImplementedException('structured clone of RegExp');
+$.CTC6 = new Isolate.$isolateProperties.NotImplementedException('structured clone of RegExp');
 $.Primitives_DOLLAR_CHAR_VALUE = 36;
 $.PI = 3.141592653589793;
 $._getTypeNameOf = null;
@@ -2652,7 +2664,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'String');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -2661,7 +2673,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -2713,7 +2725,7 @@ $.$defineNativeClass('HTMLDocument', [], {
   return this.querySelector(selectors);
 },
  query$1: function(selectors) {
-  if ($.CTC12.hasMatch$1(selectors) === true)
+  if ($.CTC.hasMatch$1(selectors) === true)
     return this.$dom_getElementById$1($.substring$1(selectors, 1));
   return this.$dom_querySelector$1(selectors);
 }
@@ -2827,7 +2839,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'File');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -2836,7 +2848,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -2880,7 +2892,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'num');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -2889,7 +2901,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -2911,7 +2923,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'num');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -2920,7 +2932,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -2963,7 +2975,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'Node');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -2972,7 +2984,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3136,7 +3148,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'int');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3145,7 +3157,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3167,7 +3179,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'int');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3176,7 +3188,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3198,7 +3210,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'int');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3207,7 +3219,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3265,7 +3277,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'String');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3274,7 +3286,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3350,7 +3362,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'Node');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3359,7 +3371,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3700,7 +3712,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'StyleSheet');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3709,7 +3721,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3775,7 +3787,7 @@ return this[index];
   return $._FixedSizeListIterator$(this, 'Touch');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3784,7 +3796,7 @@ return this[index];
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3792,6 +3804,9 @@ return this[index];
  is$JavaScriptIndexingBehavior: function() { return true; },
  is$List: function() { return true; },
  is$Collection: function() { return true; }
+});
+
+$.$defineNativeClass('UIEvent', ["layerX?", "layerY?"], {
 });
 
 $.$defineNativeClass('Uint16Array', ["length?"], {
@@ -3805,7 +3820,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'int');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3814,7 +3829,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3836,7 +3851,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'int');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3845,7 +3860,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3867,7 +3882,7 @@ this[index] = value
   return $._FixedSizeListIterator$(this, 'int');
 },
  add$1: function(value) {
-  throw $.$$throw($.CTC9);
+  throw $.$$throw($.CTC1);
 },
  forEach$1: function(f) {
   return $._Collections_forEach(this, f);
@@ -3876,7 +3891,7 @@ this[index] = value
   return $.eq($.get$length(this), 0);
 },
  removeLast$0: function() {
-  throw $.$$throw($.CTC11);
+  throw $.$$throw($.CTC4);
 },
  removeRange$2: function(start, rangeLength) {
   throw $.$$throw($.CTC13);
@@ -3977,9 +3992,9 @@ $.$defineNativeClass('XPathException', [], {
 }
 });
 
-// 168 dynamic classes.
-// 293 classes
-// 25 !leaf
+// 169 dynamic classes.
+// 301 classes
+// 27 !leaf
 (function(){
   var v0/*class(_MediaElementImpl)*/ = 'HTMLMediaElement|HTMLVideoElement|HTMLAudioElement|HTMLVideoElement|HTMLAudioElement';
   var v1/*class(_ElementImpl)*/ = [v0/*class(_MediaElementImpl)*/,v0/*class(_MediaElementImpl)*/,'Element|HTMLUnknownElement|HTMLUListElement|HTMLTrackElement|HTMLTitleElement|HTMLTextAreaElement|HTMLTableSectionElement|HTMLTableRowElement|HTMLTableElement|HTMLTableColElement|HTMLTableCellElement|HTMLTableCaptionElement|HTMLStyleElement|HTMLSpanElement|HTMLSourceElement|HTMLShadowElement|HTMLSelectElement|HTMLScriptElement|SVGElement|SVGViewElement|SVGVKernElement|SVGUseElement|SVGTitleElement|SVGTextContentElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGSymbolElement|SVGSwitchElement|SVGStyleElement|SVGStopElement|SVGScriptElement|SVGSVGElement|SVGRectElement|SVGPolylineElement|SVGPolygonElement|SVGPatternElement|SVGPathElement|SVGMissingGlyphElement|SVGMetadataElement|SVGMaskElement|SVGMarkerElement|SVGMPathElement|SVGLineElement|SVGImageElement|SVGHKernElement|SVGGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGGlyphRefElement|SVGGlyphElement|SVGGElement|SVGForeignObjectElement|SVGFontFaceUriElement|SVGFontFaceSrcElement|SVGFontFaceNameElement|SVGFontFaceFormatElement|SVGFontFaceElement|SVGFontElement|SVGFilterElement|SVGFETurbulenceElement|SVGFETileElement|SVGFESpotLightElement|SVGFESpecularLightingElement|SVGFEPointLightElement|SVGFEOffsetElement|SVGFEMorphologyElement|SVGFEMergeNodeElement|SVGFEMergeElement|SVGFEImageElement|SVGFEGaussianBlurElement|SVGFEFloodElement|SVGFEDropShadowElement|SVGFEDistantLightElement|SVGFEDisplacementMapElement|SVGFEDiffuseLightingElement|SVGFEConvolveMatrixElement|SVGFECompositeElement|SVGFEComponentTransferElement|SVGFEColorMatrixElement|SVGFEBlendElement|SVGEllipseElement|SVGDescElement|SVGDefsElement|SVGCursorElement|SVGComponentTransferFunctionElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGClipPathElement|SVGCircleElement|SVGAnimationElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGAltGlyphItemElement|SVGAltGlyphDefElement|SVGAElement|SVGViewElement|SVGVKernElement|SVGUseElement|SVGTitleElement|SVGTextContentElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGSymbolElement|SVGSwitchElement|SVGStyleElement|SVGStopElement|SVGScriptElement|SVGSVGElement|SVGRectElement|SVGPolylineElement|SVGPolygonElement|SVGPatternElement|SVGPathElement|SVGMissingGlyphElement|SVGMetadataElement|SVGMaskElement|SVGMarkerElement|SVGMPathElement|SVGLineElement|SVGImageElement|SVGHKernElement|SVGGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGGlyphRefElement|SVGGlyphElement|SVGGElement|SVGForeignObjectElement|SVGFontFaceUriElement|SVGFontFaceSrcElement|SVGFontFaceNameElement|SVGFontFaceFormatElement|SVGFontFaceElement|SVGFontElement|SVGFilterElement|SVGFETurbulenceElement|SVGFETileElement|SVGFESpotLightElement|SVGFESpecularLightingElement|SVGFEPointLightElement|SVGFEOffsetElement|SVGFEMorphologyElement|SVGFEMergeNodeElement|SVGFEMergeElement|SVGFEImageElement|SVGFEGaussianBlurElement|SVGFEFloodElement|SVGFEDropShadowElement|SVGFEDistantLightElement|SVGFEDisplacementMapElement|SVGFEDiffuseLightingElement|SVGFEConvolveMatrixElement|SVGFECompositeElement|SVGFEComponentTransferElement|SVGFEColorMatrixElement|SVGFEBlendElement|SVGEllipseElement|SVGDescElement|SVGDefsElement|SVGCursorElement|SVGComponentTransferFunctionElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGClipPathElement|SVGCircleElement|SVGAnimationElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGAltGlyphItemElement|SVGAltGlyphDefElement|SVGAElement|HTMLQuoteElement|HTMLProgressElement|HTMLPreElement|HTMLParamElement|HTMLParagraphElement|HTMLOutputElement|HTMLOptionElement|HTMLOptGroupElement|HTMLObjectElement|HTMLOListElement|HTMLModElement|HTMLMeterElement|HTMLMetaElement|HTMLMenuElement|HTMLMarqueeElement|HTMLMapElement|HTMLLinkElement|HTMLLegendElement|HTMLLabelElement|HTMLLIElement|HTMLKeygenElement|HTMLInputElement|HTMLImageElement|HTMLIFrameElement|HTMLHtmlElement|HTMLHeadingElement|HTMLHeadElement|HTMLHRElement|HTMLFrameSetElement|HTMLFrameElement|HTMLFormElement|HTMLFontElement|HTMLFieldSetElement|HTMLEmbedElement|HTMLDivElement|HTMLDirectoryElement|HTMLDetailsElement|HTMLDataListElement|HTMLDListElement|HTMLContentElement|HTMLCanvasElement|HTMLButtonElement|HTMLBodyElement|HTMLBaseFontElement|HTMLBaseElement|HTMLBRElement|HTMLAreaElement|HTMLAppletElement|HTMLAnchorElement|HTMLElement|HTMLUnknownElement|HTMLUListElement|HTMLTrackElement|HTMLTitleElement|HTMLTextAreaElement|HTMLTableSectionElement|HTMLTableRowElement|HTMLTableElement|HTMLTableColElement|HTMLTableCellElement|HTMLTableCaptionElement|HTMLStyleElement|HTMLSpanElement|HTMLSourceElement|HTMLShadowElement|HTMLSelectElement|HTMLScriptElement|SVGElement|SVGViewElement|SVGVKernElement|SVGUseElement|SVGTitleElement|SVGTextContentElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGSymbolElement|SVGSwitchElement|SVGStyleElement|SVGStopElement|SVGScriptElement|SVGSVGElement|SVGRectElement|SVGPolylineElement|SVGPolygonElement|SVGPatternElement|SVGPathElement|SVGMissingGlyphElement|SVGMetadataElement|SVGMaskElement|SVGMarkerElement|SVGMPathElement|SVGLineElement|SVGImageElement|SVGHKernElement|SVGGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGGlyphRefElement|SVGGlyphElement|SVGGElement|SVGForeignObjectElement|SVGFontFaceUriElement|SVGFontFaceSrcElement|SVGFontFaceNameElement|SVGFontFaceFormatElement|SVGFontFaceElement|SVGFontElement|SVGFilterElement|SVGFETurbulenceElement|SVGFETileElement|SVGFESpotLightElement|SVGFESpecularLightingElement|SVGFEPointLightElement|SVGFEOffsetElement|SVGFEMorphologyElement|SVGFEMergeNodeElement|SVGFEMergeElement|SVGFEImageElement|SVGFEGaussianBlurElement|SVGFEFloodElement|SVGFEDropShadowElement|SVGFEDistantLightElement|SVGFEDisplacementMapElement|SVGFEDiffuseLightingElement|SVGFEConvolveMatrixElement|SVGFECompositeElement|SVGFEComponentTransferElement|SVGFEColorMatrixElement|SVGFEBlendElement|SVGEllipseElement|SVGDescElement|SVGDefsElement|SVGCursorElement|SVGComponentTransferFunctionElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGClipPathElement|SVGCircleElement|SVGAnimationElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGAltGlyphItemElement|SVGAltGlyphDefElement|SVGAElement|SVGViewElement|SVGVKernElement|SVGUseElement|SVGTitleElement|SVGTextContentElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGTextPositioningElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextElement|SVGTSpanElement|SVGTRefElement|SVGAltGlyphElement|SVGTextPathElement|SVGSymbolElement|SVGSwitchElement|SVGStyleElement|SVGStopElement|SVGScriptElement|SVGSVGElement|SVGRectElement|SVGPolylineElement|SVGPolygonElement|SVGPatternElement|SVGPathElement|SVGMissingGlyphElement|SVGMetadataElement|SVGMaskElement|SVGMarkerElement|SVGMPathElement|SVGLineElement|SVGImageElement|SVGHKernElement|SVGGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGLinearGradientElement|SVGGlyphRefElement|SVGGlyphElement|SVGGElement|SVGForeignObjectElement|SVGFontFaceUriElement|SVGFontFaceSrcElement|SVGFontFaceNameElement|SVGFontFaceFormatElement|SVGFontFaceElement|SVGFontElement|SVGFilterElement|SVGFETurbulenceElement|SVGFETileElement|SVGFESpotLightElement|SVGFESpecularLightingElement|SVGFEPointLightElement|SVGFEOffsetElement|SVGFEMorphologyElement|SVGFEMergeNodeElement|SVGFEMergeElement|SVGFEImageElement|SVGFEGaussianBlurElement|SVGFEFloodElement|SVGFEDropShadowElement|SVGFEDistantLightElement|SVGFEDisplacementMapElement|SVGFEDiffuseLightingElement|SVGFEConvolveMatrixElement|SVGFECompositeElement|SVGFEComponentTransferElement|SVGFEColorMatrixElement|SVGFEBlendElement|SVGEllipseElement|SVGDescElement|SVGDefsElement|SVGCursorElement|SVGComponentTransferFunctionElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncBElement|SVGFEFuncAElement|SVGClipPathElement|SVGCircleElement|SVGAnimationElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGSetElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGAnimateElement|SVGAnimateColorElement|SVGAltGlyphItemElement|SVGAltGlyphDefElement|SVGAElement|HTMLQuoteElement|HTMLProgressElement|HTMLPreElement|HTMLParamElement|HTMLParagraphElement|HTMLOutputElement|HTMLOptionElement|HTMLOptGroupElement|HTMLObjectElement|HTMLOListElement|HTMLModElement|HTMLMeterElement|HTMLMetaElement|HTMLMenuElement|HTMLMarqueeElement|HTMLMapElement|HTMLLinkElement|HTMLLegendElement|HTMLLabelElement|HTMLLIElement|HTMLKeygenElement|HTMLInputElement|HTMLImageElement|HTMLIFrameElement|HTMLHtmlElement|HTMLHeadingElement|HTMLHeadElement|HTMLHRElement|HTMLFrameSetElement|HTMLFrameElement|HTMLFormElement|HTMLFontElement|HTMLFieldSetElement|HTMLEmbedElement|HTMLDivElement|HTMLDirectoryElement|HTMLDetailsElement|HTMLDataListElement|HTMLDListElement|HTMLContentElement|HTMLCanvasElement|HTMLButtonElement|HTMLBodyElement|HTMLBaseFontElement|HTMLBaseElement|HTMLBRElement|HTMLAreaElement|HTMLAppletElement|HTMLAnchorElement|HTMLElement'].join('|');
@@ -4008,6 +4023,7 @@ $.$defineNativeClass('XPathException', [], {
     ['HTMLCollection', 'HTMLCollection|HTMLOptionsCollection|HTMLOptionsCollection'],
     ['Uint8Array', v10/*class(_Uint8ArrayImpl)*/],
     ['ArrayBufferView', [v10/*class(_Uint8ArrayImpl)*/,v10/*class(_Uint8ArrayImpl)*/,'ArrayBufferView|Uint32Array|Uint16Array|Int8Array|Int32Array|Int16Array|Float64Array|Float32Array|DataView|Uint32Array|Uint16Array|Int8Array|Int32Array|Int16Array|Float64Array|Float32Array|DataView'].join('|')],
+    ['UIEvent', 'UIEvent|TouchEvent|TextEvent|SVGZoomEvent|MouseEvent|WheelEvent|WheelEvent|KeyboardEvent|CompositionEvent|TouchEvent|TextEvent|SVGZoomEvent|MouseEvent|WheelEvent|WheelEvent|KeyboardEvent|CompositionEvent'],
     ['NodeList', 'NodeList|RadioNodeList|RadioNodeList'],
     ['Blob', 'Blob|File|File'],
     ['CSSValueList', 'CSSValueList|WebKitCSSFilterValue|WebKitCSSTransformValue|WebKitCSSFilterValue|WebKitCSSTransformValue'],
