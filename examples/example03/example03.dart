@@ -9,7 +9,11 @@ void main() {
   
   var fireBtn = query("#fireBtn");
   fireBtn.on.click.add((event){
-    example.fire();
+    example.fire(250, 250);
+  }, false);
+  
+  query("#stage").on.click.add((MouseEvent event){
+    example.fire(event.layerX, event.layerY);
   }, false);
 }
 
@@ -32,7 +36,7 @@ class Example {
     window.requestAnimationFrame(draw);
   }
   
-  void fire(){
+  void fire(num x, num y){
     var r,g,b;
     
     for(num i = 0; i < 200; i++){
@@ -40,7 +44,7 @@ class Example {
       g = rand.nextInt(155)+99;
       b = rand.nextInt(155)+99;
       
-      bullets.add(new Bullet(250, 250, rand.nextDouble()-3.0, rand.nextDouble()-2.0, rand.nextDouble()-2.0, "rgb($r,$g,$b)"));
+      bullets.add(new Bullet(x, y, rand.nextDouble()-3.0, rand.nextDouble()-2.0, rand.nextDouble()-2.0, "rgb($r,$g,$b)"));
     }
   }
   
