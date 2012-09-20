@@ -5,7 +5,15 @@
 #source('fieldmap.dart');
 
 void main() {
-  new AnimationMap(query("#stage"));
+  var animationMap = new AnimationMap(query("#stage"));
+  var left = query("#left");
+  left.on.click.add((event)=>animationMap.distance = 0);
+  var right = query("#right");
+  right.on.click.add((event)=>animationMap.distance = 1);
+  var top = query("#top");
+  top.on.click.add((event)=>animationMap.distance = 2);
+  var bottom = query("#bottom");
+  bottom.on.click.add((event)=>animationMap.distance = 3);
 }
 
 /**
@@ -23,6 +31,10 @@ class AnimationMap {
   // mapchip size.
   num _chipWidth = 40;
   num _chipHeight = 40;
+  // move distance.
+  // 0:left 1:right 2:top 3:bottom
+  int _distance = 0;
+  void set distance(int d){ _distance = d;}
   
   // constructor.
   AnimationMap(this._stage){
@@ -51,17 +63,23 @@ class AnimationMap {
     // it's test. scrolling left only.
     // stage size 480x480
     // mapchip size 40x40
-    var rand = new Random();
-    var col = _width / _chipWidth + 1;
-    var row = _height / _chipHeight;
-    var posX = 0;
-    var posY = 0;
+    var col = _width / _chipWidth + 2;
+    var row = _height / _chipHeight + 2;
+    var posX = -_chipWidth;
+    var posY = -_chipHeight;
     for(num y = 0; y < row; y++){
       for(num x = 0; x < col; x++){
-        _mapData.add(new MapChipData(posX, posY, rand.nextInt(_map.chipCount.toInt())));
+        if(y == row/2){
+          _mapData.add(new MapChipData(posX, posY, 10));
+        }else if(x == col/2){
+          _mapData.add(new MapChipData(posX, posY, 10));
+        }else{
+          _mapData.add(new MapChipData(posX, posY, 0));
+        }
+        //_mapData.add(new MapChipData(posX, posY, rand.nextInt(_map.chipCount.toInt())));
         posX += _chipWidth;
       }
-      posX = 0;
+      posX = -_chipWidth;
       posY += _chipHeight;
     }
     
@@ -84,7 +102,20 @@ class AnimationMap {
   bool update(num time){
     var context = _stage.context2d;
     
-    _moveLeft();
+    switch(_distance){
+      case 0:
+        _moveLeft();
+        break;
+      case 1:
+        _moveRight();
+        break;
+      case 2:
+        _moveTop();
+        break;
+      case 3:
+        _moveBottom();
+        break;
+    }
     _fillBackground(context);
     _draw(context);
     redraw();
@@ -93,9 +124,39 @@ class AnimationMap {
   // move the map to left.
   void _moveLeft(){
     _mapData.forEach((data){
-      data.x -= 0.5;
-      if(data.x + _chipWidth < 0){
+      data.x -= 1;
+      if(data.x + _chipWidth <= 0){
         data.x = _width;
+      }
+    });
+  }
+  
+  // move the map to right.
+  void _moveRight(){
+    _mapData.forEach((data){
+      data.x += 1;
+      if(data.x >= _width){
+        data.x = -_chipWidth;
+      }
+    });
+  }
+  
+  // move the map to top.
+  void _moveTop(){
+    _mapData.forEach((data){
+      data.y -= 1;
+      if(data.y + _chipHeight <= 0){
+        data.y = _height;
+      }
+    });
+  }
+  
+  // move the map to bottom.
+  void _moveBottom(){
+    _mapData.forEach((data){
+      data.y += 1;
+      if(data.y >= _height){
+        data.y = -_chipHeight;
       }
     });
   }
@@ -109,8 +170,11 @@ class AnimationMap {
   
   // fill background.
   void _fillBackground(CanvasRenderingContext2D context){
-    context.fillStyle = "black";
-    context.fillRect(0, 0, _width, _height);
+//    context.fillStyle = "black";
+//    context.fillRect(0, 0, _width, _height);
+    _mapData.forEach((data){
+      _map.draw(context, 0, data.x, data.y);
+    });
   }
 }
 
