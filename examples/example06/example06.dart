@@ -2,7 +2,6 @@
 #import('dart:html');
 #import('dart:math');
 
-<<<<<<< HEAD
 void main() {
   var calcBtn = query("#calcBtn");
   calcBtn.on.click.add((event){
@@ -109,87 +108,3 @@ class OnesanRobot{
     _update(posX, posY - 1, copyMap); // ウェィ
   }
 }
-
-=======
-List<List<bool>> maps;
-Point pos = new Point(0,0);
-int row, col;
-
-void main() {
-  var calcBtn = query("#calc");
-  calcBtn.on.click.add((event){
-    InputElement rowTxt = query("#row");
-    InputElement colTxt = query("#col");
-    row = parseInt(rowTxt.value);
-    col = parseInt(colTxt.value);
-    calculate();
-    
-    query("#result").addHTML("");
-  }, false);
-  
-}
-
-void calculate(){
-  initializeMap();
-  
-  processing();
-  
-  showMapState();
-}
-
-void initializeMap(){
-  maps = new List<List<bool>>(row);
-  for(int y=0; y<maps.length; y++){
-    maps[y] = new List<bool>(col);
-    for(int x=0; x<maps[y].length; x++){
-      maps[y][x] = false;
-    }
-  }
-  pos = new Point(0,0);
-}
-
-void showMapState(){
-  String state = "";
-  for(int y=0; y<maps.length; y++){
-    for(int x=0; x<maps[y].length; x++){
-      state = "$state${maps[y][x] ? "1,":"0,"}";
-    }
-    print(state);
-    state = "";
-  }
-  print(state);
-}
-
-void processing(){
-  
-  if(maps[row-1][col-1]){
-    print("clear");
-    return;
-  }else{
-    
-    processing();
-  }
-}
-
-int count = 0;
-
-bool valid(Point pos){
-  // 自分の上下左右を探索
-  // 右を探索
-  if(pos.x + 1 < maps[0].length){
-    if(maps[pos.y][pos.x+1]){
-      // 探索済
-    }else{
-      maps[pos.y][pos.x+1] = true;
-      pos.x += 1;
-    }
-  }
-  
-  if(pos.y == maps.length-1 && pos.x == maps[maps.length-1].length-1){
-    return true;
-  }
-  return false;
-}
-
-
->>>>>>> てとりす
