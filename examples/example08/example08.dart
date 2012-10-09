@@ -27,6 +27,9 @@ void main() {
   query("#negaBtn").on.click.add((e){
     negaFilter();
   });
+  query("#mozaBtn").on.click.add((e){
+    mozaFilter();
+  });
 }
 
 void selectImage(imageName){
@@ -99,4 +102,38 @@ void negaFilter(){
     imgPixels.data[i+2] = 255 - blue;
   }
   context.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
+}
+
+// モザイクのフィルタリング、あとでもっとまじめに書く
+void mozaFilter(){
+  CanvasRenderingContext2D context = canvas.getContext("2d");
+  var imgPixels = context.getImageData(0, 0, img.width, img.height);
+  int dot = 8;
+  int w = (img.width/dot).toInt();
+  int h = (img.height/dot).toInt();
+  for(int i=0; i < w; i++){
+    for(int j=0; j < h; j++){
+      int px = i*dot;
+      int py = j*dot;
+      var block = context.getImageData(px, py, dot, dot);
+      int rr = 0;
+      int gg = 0;
+      int bb = 0;
+//      int gray = 0;
+      int len = (block.data.length/4).toInt();
+      for(int k=0; k<len; k++){
+        rr += block.data[k*4];
+        gg += block.data[k*4+1];
+        bb += block.data[k*4+2];
+      }
+      rr = (rr/len).toInt();
+      gg = (gg/len).toInt();
+      bb = (bb/len).toInt();
+//      gray = (0.299 * rr + 0.587 * gg + 0.114 * bb).toInt();
+      context.fillStyle = "rgb($rr,$gg,$bb)";
+//      context.fillStyle = "rgb($gray,$gray,$gray)";
+      context.fillRect(px, py, dot, dot);
+    }
+  }
+//  context.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
 }
