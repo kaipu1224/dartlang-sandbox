@@ -104,6 +104,7 @@ void negaFilter(){
   context.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
 }
 
+<<<<<<< HEAD
 // モザイクのフィルタリング、あとでもっとまじめに書く
 void mozaFilter(){
   CanvasRenderingContext2D context = canvas.getContext("2d");
@@ -136,4 +137,22 @@ void mozaFilter(){
     }
   }
 //  context.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
+=======
+void mozaFilter(){
+  CanvasRenderingContext2D context = canvas.getContext("2d");
+  var imgPixels = context.getImageData(0, 0, img.width, img.height);
+  int pixLength = (img.width * img.height)*4;
+  
+  int red, green, blue;
+  for(var i = 0; i < pixLength; i += 4){
+    red = imgPixels.data[i];
+    green = imgPixels.data[i+1];
+    blue = imgPixels.data[i+2];
+    
+    imgPixels.data[i] = 255 - red;
+    imgPixels.data[i+1] = 255 - green;
+    imgPixels.data[i+2] = 255 - blue;
+  }
+  context.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
+>>>>>>> test
 }
